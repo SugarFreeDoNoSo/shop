@@ -9,6 +9,8 @@ edition = "2021"
 [dependencies]
 dioxus-free-icons = { version = "0.9", features = ["font-awesome-brands"] }
 dioxus = { version = "0.6.0", features = ["router", "fullstack"] }
+dotenvy = "0.15.7"
+libsql = "0.6.0"
 
 [features]
 default = ["web"]
@@ -27,3 +29,4 @@ inherits = "dev"
 
 [profile.android-dev]
 inherits = "dev"
+

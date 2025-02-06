@@ -1,7 +1,12 @@
+mod components;
+
+// use components;
+
 use dioxus::prelude::*;
+use std::io;
+use std::process::Command;
+
 // use serde::{Deserialize, Serialize};
-
-
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
@@ -17,14 +22,38 @@ enum Route {
     Carrito {},
 }
 
-
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
-const HEADER_SVG: Asset = asset!("/assets/header.svg");
 const TAILWIND_CSS: Asset = asset!("/assets/output.css");
 
 fn main() {
+    if let Err(e) = tailwind() {
+        eprintln!("Ocurrió un error: {}", e);
+    }
     dioxus::launch(App);
+}
+
+fn tailwind() -> io::Result<()> {
+    // Configuramos el comando "bunx" con sus argumentos.
+    let salida = Command::new("bunx")
+        .arg("@tailwindcss/cli")
+        .arg("-i")
+        .arg("./assets/main.css")
+        .arg("-o")
+        .arg("./assets/output.css")
+        .arg("--optimize")
+        .arg("--minify")
+        .output()?; // Ejecuta el comando y recoge la salida.
+
+    // Verificamos si la ejecución fue exitosa.
+    if salida.status.success() {
+        println!("Comando ejecutado correctamente:");
+        println!("{}", String::from_utf8_lossy(&salida.stdout));
+    } else {
+        eprintln!("Error al ejecutar el comando:");
+        eprintln!("{}", String::from_utf8_lossy(&salida.stderr));
+    }
+    Ok(())
 }
 
 #[component]
@@ -37,24 +66,6 @@ fn App() -> Element {
     }
 }
 
-#[component]
-pub fn Hero() -> Element {
-    rsx! {
-        div { id: "hero",
-            img { src: HEADER_SVG, id: "header" }
-            div { id: "links",
-                a { href: "https://dioxuslabs.com/learn/0.6/", "📚 Learn Dioxus" }
-                a { href: "https://dioxuslabs.com/awesome", "🚀 Awesome Dioxus" }
-                a { href: "https://github.com/dioxus-community/", "📡 Community Libraries" }
-                a { href: "https://github.com/DioxusLabs/sdk", "⚙️ Dioxus Development Kit" }
-                a { href: "https://marketplace.visualstudio.com/items?itemName=DioxusLabs.dioxus",
-                    "💫 VSCode Extension"
-                }
-                a { href: "https://discord.gg/XgGxMSkvUM", "👋 Community Discord" }
-            }
-        }
-    }
-}
 
 #[component]
 fn Home() -> Element {
@@ -63,7 +74,7 @@ fn Home() -> Element {
             h1 { class: "text-4xl font-bold mb-8 text-center",
                 "Bienvenido a nuestra Tienda de Ropa Elegante"
             }
-            FeaturedProducts {}
+            components::featured_products::FeaturedProducts {}
         }
     }
 }
@@ -73,7 +84,7 @@ fn Colecciones() -> Element {
     rsx! {
         div { class: "container mx-auto px-4",
             h2 { class: "text-3xl font-semibold mb-6", "Nuestras Colecciones" }
-            ProductGrid {}
+            components::product_grid::ProductGrid {}
         }
     }
 }
@@ -83,7 +94,7 @@ fn Contacto() -> Element {
     rsx! {
         div { class: "container mx-auto px-4 py-8",
             h2 { class: "text-3xl font-semibold mb-6", "Contáctanos" }
-            ContactForm {}
+            components::contact_form::ContactForm {}
         }
     }
 }
@@ -93,7 +104,7 @@ fn Carrito() -> Element {
     rsx! {
         div { class: "container mx-auto px-4",
             h2 { class: "text-3xl font-semibold mb-6", "Tu Carrito" }
-            ShoppingCart {}
+            components::shopping_cart::ShoppingCart {}
         }
     }
 }
@@ -144,31 +155,3 @@ fn Navbar() -> Element {
     }
 }
 
-// Placeholder components that we'll implement next
-#[component]
-fn FeaturedProducts() -> Element {
-    rsx! {
-        div { class: "grid grid-cols-1 md:grid-cols-3 gap-6", "Featured Products Coming Soon" }
-    }
-}
-
-#[component]
-fn ProductGrid() -> Element {
-    rsx! {
-        div { class: "grid grid-cols-1 md:grid-cols-4 gap-6", "Product Grid Coming Soon" }
-    }
-}
-
-#[component]
-fn ContactForm() -> Element {
-    rsx! {
-        div { class: "max-w-lg mx-auto", "Contact Form Coming Soon" }
-    }
-}
-
-#[component]
-fn ShoppingCart() -> Element {
-    rsx! {
-        div { class: "max-w-2xl mx-auto", "Shopping Cart Coming Soon" }
-    }
-}
