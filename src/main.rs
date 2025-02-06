@@ -3,8 +3,6 @@ mod components;
 // use components;
 
 use dioxus::prelude::*;
-use std::io;
-use std::process::Command;
 
 // use serde::{Deserialize, Serialize};
 
@@ -27,34 +25,9 @@ const MAIN_CSS: Asset = asset!("/assets/main.css");
 const TAILWIND_CSS: Asset = asset!("/assets/output.css");
 
 fn main() {
-    if let Err(e) = tailwind() {
-        eprintln!("Ocurrió un error: {}", e);
-    }
     dioxus::launch(App);
 }
 
-fn tailwind() -> io::Result<()> {
-    // Configuramos el comando "bunx" con sus argumentos.
-    let salida = Command::new("bunx")
-        .arg("@tailwindcss/cli")
-        .arg("-i")
-        .arg("./assets/main.css")
-        .arg("-o")
-        .arg("./assets/output.css")
-        .arg("--optimize")
-        .arg("--minify")
-        .output()?; // Ejecuta el comando y recoge la salida.
-
-    // Verificamos si la ejecución fue exitosa.
-    if salida.status.success() {
-        println!("Comando ejecutado correctamente:");
-        println!("{}", String::from_utf8_lossy(&salida.stdout));
-    } else {
-        eprintln!("Error al ejecutar el comando:");
-        eprintln!("{}", String::from_utf8_lossy(&salida.stderr));
-    }
-    Ok(())
-}
 
 #[component]
 fn App() -> Element {
