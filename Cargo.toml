@@ -18,7 +18,7 @@ dioxus-ssr = "0.6.2"
 web = ["dioxus/web"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
-server = ["dioxus/server", "dep:libsql", "dep:dotenvy"]
+server = ["dioxus/server", "dep:libsql"]
 
 
 [profile]

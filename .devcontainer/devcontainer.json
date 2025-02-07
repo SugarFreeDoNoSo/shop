@@ -1,11 +1,7 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/rust-postgres
 {
-	"name": "dx",  
+	"name": "Rust Dev Container",
 	"build": {
-		"dockerfile": "Dockerfile" // Path to your Dockerfile
-	},
-	"forwardPorts": [ // Optional:  Forward ports from the container to your local machine
-	  8080 // Example:  Forward port 8080 (often used for web servers)
-	]
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	}
 }
